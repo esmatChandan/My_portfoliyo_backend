@@ -1,9 +1,9 @@
-import express from 'express';
+import express from "express";
 const router = express.Router();
 
-import Contact from '../models/contectdetails.js';
-import nodemailer from 'nodemailer';
-router.post('/', async (req, res) => {
+import Contact from "../models/contectdetails.js";
+import nodemailer from "nodemailer";
+router.post("/", async (req, res) => {
   const { name, email, message } = req.body;
 
   try {
@@ -13,7 +13,7 @@ router.post('/', async (req, res) => {
 
     // Send email
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      service: "gmail",
       auth: {
         user: process.env.MAIL_USER,
         pass: process.env.MAIL_PASS,
@@ -23,17 +23,22 @@ router.post('/', async (req, res) => {
     const mailOptions = {
       from: process.env.MAIL_USER,
       to: email,
-      subject: 'Thanks for contacting us!',
-      text: `Hi ${name},\n\nWe got your message: "${message}".\nWe'll get back to you soon!\n\n– Team`,
+      subject: "Thanks for contacting us!",
+      text: `Hi ${name},
+
+Thanks for your message: "${message}"
+
+I appreciate you reaching out. I'll get back to you as soon as I can!
+
+– Chandan`,
     };
 
     await transporter.sendMail(mailOptions);
 
-    res.status(201).json({ message: 'Contact saved and email sent!' });
-
+    res.status(201).json({ message: "Contact saved and email sent!" });
   } catch (error) {
-    console.error('Error in POST /contact:', error);
-    res.status(500).json({ message: 'Something went wrong', error });
+    console.error("Error in POST /contact:", error);
+    res.status(500).json({ message: "Something went wrong", error });
   }
 });
 
